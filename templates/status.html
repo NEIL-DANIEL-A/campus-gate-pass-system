@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Gate Pass #{{ gate_pass.id }} Status{% endblock %}
+
+{% block content %}
+
+<div class="hero-header">
+  <h1 class="hero-title">
+    <span>🎫</span> Pass #{{ gate_pass.id }} Status
+  </h1>
+  <p class="hero-subtitle">
+    Official Digital Campus Clearance Ticket
+  </p>
+</div>
+
+<div class="ticket-wrapper">
+  <div class="ticket-header">
+    <div style="margin-bottom: 0.5rem;">
+      {% if gate_pass.status == 'approved' %}
+        <span class="badge badge-approved" style="font-size: 1rem; padding: 0.4rem 1.25rem;">✓ APPROVED</span>
+      {% elif gate_pass.status == 'rejected' %}
+        <span class="badge badge-rejected" style="font-size: 1rem; padding: 0.4rem 1.25rem;">✕ REJECTED</span>
+      {% else %}
+        <span class="badge badge-pending" style="font-size: 1rem; padding: 0.4rem 1.25rem;">⏳ PENDING ADMIN REVIEW</span>
+      {% endif %}
+    </div>
+    <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.5rem;">
+      Admin has been alerted via AWS SNS
+    </p>
+  </div>
+
+  <div class="ticket-body">
+    <div class="ticket-row">
+      <span class="ticket-label">Student Name</span>
+      <span class="ticket-value">{{ gate_pass.name }}</span>
+    </div>
+
+    <div class="ticket-row">
+      <span class="ticket-label">Email</span>
+      <span class="ticket-value">{{ gate_pass.email }}</span>
+    </div>
+
+    <div class="ticket-row">
+      <span class="ticket-label">Reason</span>
+      <span class="ticket-value">{{ gate_pass.reason }}</span>
+    </div>
+
+    <div class="ticket-row">
+      <span class="ticket-label">Out Time</span>
+      <span class="ticket-value">{{ gate_pass.out_time }}</span>
+    </div>
+
+    <div class="ticket-row">
+      <span class="ticket-label">Expected Return</span>
+      <span class="ticket-value">{{ gate_pass.return_time }}</span>
+    </div>
+
+    {% if gate_pass.status == 'rejected' %}
+    <div class="ticket-row" style="background: rgba(239, 68, 68, 0.1); padding: 0.75rem; border-radius: 8px; border-left: 3px solid var(--danger);">
+      <span class="ticket-label" style="color: #fca5a5;">Rejection Reason</span>
+      <span class="ticket-value" style="color: #fca5a5;">{{ gate_pass.rejection_reason or 'No reason provided' }}</span>
+    </div>
+    {% endif %}
+
+    <div class="ticket-row">
+      <span class="ticket-label">Submitted At</span>
+      <span class="ticket-value" style="font-weight: 500; font-size: 0.88rem; color: var(--text-muted);">
+        {{ gate_pass.created_at }}
+      </span>
+    </div>
+
+    <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+      <a href="{{ url_for('index') }}" class="btn" style="background: #1e293b; color: white; flex: 1; text-align: center;">
+        New Request
+      </a>
+      <a href="{{ url_for('admin') }}" class="btn btn-cyan" style="flex: 1; text-align: center;">
+        Admin Dashboard
+      </a>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
