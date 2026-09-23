@@ -31,9 +31,8 @@
 
 <!-- Pending Requests Table -->
 <div class="card">
-  <div style="border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1.5rem;">
-    <h2 style="font-size: 1.3rem; color: #ffffff;">Pending Requests ({{ pending_passes|length }})</h2>
-    <p style="color: var(--text-muted); font-size: 0.88rem;">Approve or reject passes. Students can view status in real time.</p>
+  <div style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem; margin-bottom: 1rem;">
+    <h2 style="font-size: 1.2rem; color: #ffffff;">Pending Requests ({{ pending_passes|length }})</h2>
   </div>
 
   {% if pending_passes %}
@@ -41,12 +40,11 @@
       <table class="table">
         <thead>
           <tr>
-            <th>ID</th>
+            <th style="width: 45px;">ID</th>
             <th>Student</th>
             <th>Reason</th>
-            <th>Out &rarr; Return</th>
-            <th>Email</th>
-            <th style="min-width: 250px; text-align: right;">Action</th>
+            <th style="white-space: nowrap;">Times</th>
+            <th style="text-align: right; width: 170px;">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -54,34 +52,34 @@
             <tr>
               <td><strong>#{{ pass.id }}</strong></td>
               <td>
-                <a href="{{ url_for('status', pass_id=pass.id) }}" style="color: var(--cyan-accent); text-decoration: none; font-weight: 600;">
+                <a href="{{ url_for('status', pass_id=pass.id) }}" style="color: var(--cyan-accent); text-decoration: none; font-weight: 600; display: block;">
                   {{ pass.name }}
                 </a>
+                <span style="font-size: 0.75rem; color: var(--text-muted);">{{ pass.email }}</span>
               </td>
-              <td>{{ pass.reason }}</td>
-              <td>
-                <span style="font-weight: 600;">{{ pass.out_time }}</span> &rarr; <span style="font-weight: 600;">{{ pass.return_time }}</span>
+              <td style="max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="{{ pass.reason }}">
+                {{ pass.reason }}
               </td>
-              <td style="font-size: 0.85rem; color: var(--text-muted);">{{ pass.email }}</td>
+              <td style="font-size: 0.8rem; white-space: nowrap;">
+                {{ pass.out_time }} &rarr; {{ pass.return_time }}
+              </td>
               <td style="text-align: right;">
-                <div style="display: flex; gap: 0.5rem; justify-content: flex-end; align-items: center; flex-wrap: wrap;">
+                <div style="display: flex; gap: 0.35rem; justify-content: flex-end; align-items: center;">
                   <!-- Approve Button -->
-                  <form method="POST" action="{{ url_for('admin_approve', pass_id=pass.id) }}" style="display: inline;">
+                  <form method="POST" action="{{ url_for('admin_approve', pass_id=pass.id) }}" style="margin: 0;">
                     <button type="submit" class="btn btn-success btn-sm">
                       ✓ Approve
                     </button>
                   </form>
 
                   <!-- Reject Form -->
-                  <form method="POST" action="{{ url_for('admin_reject', pass_id=pass.id) }}" class="reject-form" style="display: inline-flex;">
+                  <form method="POST" action="{{ url_for('admin_reject', pass_id=pass.id) }}" class="reject-form" style="margin: 0;">
                     <input 
-                      type="text" 
+                      type="hidden" 
                       name="reason" 
-                      class="reject-input" 
-                      placeholder="Rejection reason..." 
-                      required
+                      value="Denied by administration"
                     >
-                    <button type="submit" class="btn btn-danger btn-sm">
+                    <button type="submit" class="btn btn-danger btn-sm" onclick="let r = prompt('Reason for rejection:', 'Denied by administration'); if(r===null) return false; this.form.reason.value = r;">
                       ✕ Reject
                     </button>
                   </form>
@@ -93,9 +91,9 @@
       </table>
     </div>
   {% else %}
-    <div style="text-align: center; padding: 2.5rem; color: var(--text-muted);">
-      <p style="font-size: 1.1rem; margin-bottom: 0.5rem;">🎉 No pending requests!</p>
-      <p style="font-size: 0.88rem;">
+    <div style="text-align: center; padding: 2rem; color: var(--text-muted);">
+      <p style="font-size: 1rem; margin-bottom: 0.35rem;">🎉 No pending requests!</p>
+      <p style="font-size: 0.85rem;">
         <a href="{{ url_for('index') }}" style="color: var(--cyan-accent); font-weight: 600;">Submit a student pass</a> to test.
       </p>
     </div>
@@ -104,8 +102,8 @@
 
 <!-- Processed History -->
 <div class="card">
-  <div style="border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1.5rem;">
-    <h2 style="font-size: 1.3rem; color: #ffffff;">Processed Pass History</h2>
+  <div style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem; margin-bottom: 1rem;">
+    <h2 style="font-size: 1.2rem; color: #ffffff;">Processed Pass History</h2>
   </div>
 
   {% if processed_passes %}
@@ -113,12 +111,12 @@
       <table class="table">
         <thead>
           <tr>
-            <th>ID</th>
+            <th style="width: 45px;">ID</th>
             <th>Student</th>
             <th>Schedule</th>
             <th>Status</th>
             <th>Notes</th>
-            <th>View</th>
+            <th style="text-align: right; width: 60px;">View</th>
           </tr>
         </thead>
         <tbody>
@@ -126,7 +124,7 @@
             <tr>
               <td><strong>#{{ pass.id }}</strong></td>
               <td><strong>{{ pass.name }}</strong></td>
-              <td>{{ pass.out_time }} &rarr; {{ pass.return_time }}</td>
+              <td style="white-space: nowrap; font-size: 0.82rem;">{{ pass.out_time }} &rarr; {{ pass.return_time }}</td>
               <td>
                 {% if pass.status == 'approved' %}
                   <span class="badge badge-approved">Approved</span>
@@ -134,15 +132,15 @@
                   <span class="badge badge-rejected">Rejected</span>
                 {% endif %}
               </td>
-              <td style="color: var(--text-muted); font-size: 0.88rem;">
+              <td style="color: var(--text-muted); font-size: 0.82rem; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                 {% if pass.status == 'rejected' %}
-                  <em>Reason: {{ pass.rejection_reason }}</em>
+                  <em>{{ pass.rejection_reason }}</em>
                 {% else %}
                   Clearance granted
                 {% endif %}
               </td>
-              <td>
-                <a href="{{ url_for('status', pass_id=pass.id) }}" class="btn btn-sm btn-cyan" style="padding: 0.25rem 0.6rem; font-size: 0.8rem;">
+              <td style="text-align: right;">
+                <a href="{{ url_for('status', pass_id=pass.id) }}" class="btn btn-sm btn-cyan" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;">
                   View
                 </a>
               </td>
@@ -152,7 +150,7 @@
       </table>
     </div>
   {% else %}
-    <p style="color: var(--text-muted); font-size: 0.9rem;">No processed history yet.</p>
+    <p style="color: var(--text-muted); font-size: 0.88rem;">No processed history yet.</p>
   {% endif %}
 </div>
 
