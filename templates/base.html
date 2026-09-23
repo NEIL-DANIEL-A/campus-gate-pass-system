@@ -8,17 +8,10 @@
 </head>
 <body>
 
-  <!-- Navigation Bar -->
-  <header class="navbar">
-    <a href="{{ url_for('index') }}" class="nav-brand">
-      <span>🏫 Campus Gate Pass</span>
-      <span class="badge-tag">AWS SNS Demo</span>
-    </a>
-    <nav class="nav-links">
-      <a href="{{ url_for('index') }}" class="{% if request.endpoint == 'index' %}active{% endif %}">Request Pass</a>
-      <a href="{{ url_for('admin') }}" class="{% if request.endpoint == 'admin' %}active{% endif %}">Admin Dashboard</a>
-    </nav>
-  </header>
+  <!-- Minimal top-right admin link -->
+  <div class="top-nav">
+    <a href="{{ url_for('admin') }}" class="admin-link">⚙️ Admin</a>
+  </div>
 
   <main class="container">
     <!-- Flash Messages Banner -->
@@ -37,10 +30,5 @@
     <!-- Page Content -->
     {% block content %}{% endblock %}
   </main>
-
-  <footer>
-    <p>Campus Gate Pass Demo &bull; Built with Flask &amp; <strong>AWS SNS</strong> (Admin Alerts)</p>
-  </footer>
-
 </body>
 </html>
