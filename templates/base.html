@@ -5,6 +5,392 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}Campus Gate Pass System{% endblock %}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+/* Campus Gate Pass System - Dark Sleek Cyan Theme (Single-Screen / No Scroll) */
+:root {
+  --bg-primary: #0a1124;
+  --bg-card: #111d38;
+  --bg-card-inner: #0d172e;
+  --cyan-accent: #22d3ee;
+  --cyan-accent-hover: #06b6d4;
+  --cyan-glow: rgba(34, 211, 238, 0.25);
+  --text-main: #ffffff;
+  --text-muted: #94a3b8;
+  --border-color: #1e293b;
+  --border-dashed: #334155;
+  --success: #10b981;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  min-height: 100vh;
+  background-color: var(--bg-primary);
+  font-family: var(--font-family);
+  color: var(--text-main);
+  line-height: 1.4;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  padding: 1.5rem 0;
+}
+
+/* Discreet Top Admin link */
+.top-nav {
+  position: absolute;
+  top: 1rem;
+  right: 1.5rem;
+  z-index: 10;
+}
+
+.admin-link {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  transition: all 0.2s ease;
+}
+
+.admin-link:hover {
+  color: var(--cyan-accent);
+  border-color: var(--cyan-accent);
+  background: rgba(34, 211, 238, 0.1);
+}
+
+/* Main Container */
+.container {
+  max-width: 680px;
+  width: 90%;
+  margin: 0 auto;
+}
+
+/* Hero Section */
+.hero-header {
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+
+.hero-title {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 0.2rem;
+}
+
+.hero-subtitle {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+}
+
+/* Flash alerts */
+.flash-messages {
+  margin-bottom: 1rem;
+}
+
+.alert {
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid transparent;
+}
+
+.alert-success {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.3);
+  color: #6ee7b7;
+}
+
+.alert-warning {
+  background: rgba(245, 158, 11, 0.15);
+  border-color: rgba(245, 158, 11, 0.3);
+  color: #fcd34d;
+}
+
+.alert-danger {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+}
+
+.alert-info {
+  background: rgba(34, 211, 238, 0.15);
+  border-color: rgba(34, 211, 238, 0.3);
+  color: #67e8f9;
+}
+
+/* Cards */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 1.5rem 1.8rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+}
+
+/* Dashed Inner Box */
+.dashed-box {
+  border: 1px dashed var(--border-dashed);
+  background: var(--bg-card-inner);
+  border-radius: 10px;
+  padding: 1.25rem 1.25rem 1rem 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+/* Forms */
+.form-group {
+  margin-bottom: 0.85rem;
+}
+
+.form-label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.8rem;
+  margin-bottom: 0.25rem;
+  color: #cbd5e1;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.55rem 0.8rem;
+  background: #091226;
+  border: 1px solid var(--border-dashed);
+  border-radius: 6px;
+  font-size: 0.88rem;
+  color: #ffffff;
+  transition: all 0.2s ease;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--cyan-accent);
+  box-shadow: 0 0 0 2px var(--cyan-glow);
+}
+
+.form-control::placeholder {
+  color: #475569;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem;
+}
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  font-weight: 700;
+  text-align: center;
+  padding: 0.7rem 1.5rem;
+  font-size: 0.92rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.btn-cyan {
+  background-color: var(--cyan-accent);
+  color: #081021;
+}
+
+.btn-cyan:hover {
+  background-color: var(--cyan-accent-hover);
+  box-shadow: 0 0 15px var(--cyan-glow);
+  transform: translateY(-1px);
+}
+
+.btn-success {
+  background-color: var(--success);
+  color: #ffffff;
+}
+
+.btn-danger {
+  background-color: var(--danger);
+  color: #ffffff;
+}
+
+.btn-sm {
+  padding: 0.35rem 0.7rem;
+  font-size: 0.8rem;
+  border-radius: 5px;
+}
+
+.btn-block {
+  display: block;
+  width: 100%;
+}
+
+/* Badges */
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.badge-pending {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+}
+
+.badge-approved {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+.badge-rejected {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+}
+
+/* Stats grid for Admin */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.stat-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 0.85rem;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 1.75rem;
+  font-weight: 800;
+}
+
+.stat-label {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-top: 0.2rem;
+}
+
+/* Tables */
+.table-responsive {
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.table th {
+  background: #0d172e;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--cyan-accent);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.table td {
+  padding: 0.65rem 0.8rem;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.85rem;
+  vertical-align: middle;
+}
+
+.reject-form {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.reject-input {
+  padding: 0.3rem 0.5rem;
+  font-size: 0.8rem;
+  background: #091226;
+  color: white;
+  border: 1px solid var(--border-dashed);
+  border-radius: 5px;
+  width: 120px;
+}
+
+/* Pass Ticket View */
+.ticket-wrapper {
+  max-width: 480px;
+  margin: 0 auto;
+  background: var(--bg-card);
+  border-radius: 14px;
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+}
+
+.ticket-header {
+  padding: 1.25rem;
+  text-align: center;
+  background: #0d172e;
+  border-bottom: 1px dashed var(--border-dashed);
+}
+
+.ticket-body {
+  padding: 1.25rem 1.5rem;
+}
+
+.ticket-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.65rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.ticket-label {
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+}
+
+.ticket-value {
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: #ffffff;
+}
+  </style>
 </head>
 <body>
 
